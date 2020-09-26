@@ -3,6 +3,8 @@ package com.saitynai.springbootvue.SpringBootVueApplication;
 
 import com.saitynai.springbootvue.SpringBootVueApplication.Recipes.Recipe;
 import com.saitynai.springbootvue.SpringBootVueApplication.Recipes.RecipeRepository;
+import com.saitynai.springbootvue.SpringBootVueApplication.Comments.Comment;
+import com.saitynai.springbootvue.SpringBootVueApplication.Comments.CommentRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +16,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Collections;
-import java.util.stream.Stream;
 
 @SpringBootApplication
 public class SpringBootVueApplication {
@@ -25,20 +26,36 @@ public class SpringBootVueApplication {
 
 	@Bean
 	ApplicationRunner init(RecipeRepository repository){
-		String[][] mas = {
+		String[][] r = {
 				{"title1","ingredients1","desc1","recipe1"},
 				{"title2","ingredients2","desc2","recipe2"},
 				{"title3","ingredients3","desc3","recipe3"},
 				{"title4","ingredients4","desc4","recipe4"}
 		};
 		return  args -> {
-			for (var val:mas) {
+			for (var val:r) {
 				Recipe recipe = new Recipe();
 				recipe.setTitle(val[0]);
 				recipe.setIngredients(val[1]);
 				recipe.setDescription(val[2]);
 				recipe.setRecipe(val[3]);
 				repository.save(recipe);
+			}
+			repository.findAll().forEach(System.out::println);
+		};
+	}
+	@Bean
+	ApplicationRunner init(CommentRepository repository){
+		String [][]c = {
+				{"comment1"},
+				{"comment2"},
+				{"comment3"}
+		};
+		return  args -> {
+			for (var val:c) {
+				Comment comment = new Comment();
+				comment.setComment(val[0]);
+				repository.save(comment);
 			}
 			repository.findAll().forEach(System.out::println);
 		};
