@@ -8,7 +8,7 @@
       </div>
       <div v-else>
         <header class="header">
-          <input class="new-todo"
+          <input class="new-recipe"
                  autofocus autocomplete="off"
                  :placeholder="this.inputPlaceholder"
                  v-model="newTodo"
@@ -16,27 +16,27 @@
         </header>
         <section class="main" v-show="todos.length" v-cloak>
           <input class="toggle-all" type="checkbox" v-model="allDone">
-          <ul class="todo-list">
-            <li v-for="todo in filteredTodos"
-                class="todo"
-                :key="todo.id"
-                :class="{ completed: todo.completed, editing: todo == editedTodo }">
+          <ul class="recipe-list">
+            <li v-for="recipe in filteredTodos"
+                class="recipe"
+                :key="recipe.id"
+                :class="{ completed: recipe.completed, editing: recipe == editedTodo }">
               <div class="view">
-                <input class="toggle" type="checkbox" v-model="todo.completed" @change="completeTodo(todo)">
-                <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-                <button class="destroy" @click="removeTodo(todo)"></button>
+                <input class="toggle" type="checkbox" v-model="recipe.completed" @change="completeTodo(recipe)">
+                <label @dblclick="editTodo(recipe)">{{ recipe.title }}</label>
+                <button class="destroy" @click="removeTodo(recipe)"></button>
               </div>
               <input class="edit" type="text"
-                     v-model="todo.title"
-                     v-todo-focus="todo == editedTodo"
-                     @blur="doneEdit(todo)"
-                     @keyup.enter="doneEdit(todo)"
-                     @keyup.esc="cancelEdit(todo)">
+                     v-model="recipe.title"
+                     v-recipe-focus="recipe == editedTodo"
+                     @blur="doneEdit(recipe)"
+                     @keyup.enter="doneEdit(recipe)"
+                     @keyup.esc="cancelEdit(recipe)">
             </li>
           </ul>
         </section>
         <footer class="footer" v-show="todos.length" v-cloak>
-          <span class="todo-count">
+          <span class="recipe-count">
             <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
           </span>
           <ul class="filters">
@@ -64,13 +64,13 @@
       return todos
     },
     active: function (todos) {
-      return todos.filter(function (todo) {
-        return !todo.completed
+      return todos.filter(function (recipe) {
+        return !recipe.completed
       })
     },
     completed: function (todos) {
-      return todos.filter(function (todo) {
-        return todo.completed
+      return todos.filter(function (recipe) {
+        return recipe.completed
       })
     }
   }
@@ -115,8 +115,8 @@
           return this.remaining === 0
         },
         set: function (value) {
-          this.todos.forEach(function (todo) {
-            todo.completed = value
+          this.todos.forEach(function (recipe) {
+            recipe.completed = value
           })
         }
       },
@@ -156,34 +156,34 @@
         this.visibility = vis
       },
 
-      completeTodo (todo) {
+      completeTodo (recipe) {
       },
 
-      removeTodo: function (todo) { // notice NOT using "=>" syntax
-        this.todos.splice(this.todos.indexOf(todo), 1)
+      removeTodo: function (recipe) { // notice NOT using "=>" syntax
+        this.todos.splice(this.todos.indexOf(recipe), 1)
       },
 
-      editTodo: function (todo) {
-        this.beforeEditCache = todo.title
-        this.editedTodo = todo
+      editTodo: function (recipe) {
+        this.beforeEditCache = recipe.title
+        this.editedTodo = recipe
       },
 
-      doneEdit: function (todo) {
+      doneEdit: function (recipe) {
         if (!this.editedTodo) {
           return
         }
 
         this.editedTodo = null
-        todo.title = todo.title.trim()
+        recipe.title = recipe.title.trim()
 
-        if (!todo.title) {
-          this.removeTodo(todo)
+        if (!recipe.title) {
+          this.removeTodo(recipe)
         }
       },
 
-      cancelEdit: function (todo) {
+      cancelEdit: function (recipe) {
         this.editedTodo = null
-        todo.title = this.beforeEditCache
+        recipe.title = this.beforeEditCache
       },
 
       removeCompleted: function () {
@@ -199,7 +199,7 @@
     // before focusing on the input field.
     // http://vuejs.org/guide/custom-directive.html
     directives: {
-      'todo-focus': function (el, binding) {
+      'recipe-focus': function (el, binding) {
         if (binding.value) {
           el.focus()
         }

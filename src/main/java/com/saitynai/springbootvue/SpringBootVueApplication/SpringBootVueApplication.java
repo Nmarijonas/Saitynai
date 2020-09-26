@@ -1,6 +1,8 @@
 package com.saitynai.springbootvue.SpringBootVueApplication;
 
 
+import com.saitynai.springbootvue.SpringBootVueApplication.Recipes.Recipe;
+import com.saitynai.springbootvue.SpringBootVueApplication.Recipes.RecipeRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,13 +24,22 @@ public class SpringBootVueApplication {
 	}
 
 	@Bean
-	ApplicationRunner init(TodoRepository repository){
+	ApplicationRunner init(RecipeRepository repository){
+		String[][] mas = {
+				{"title1","ingredients1","desc1","recipe1"},
+				{"title2","ingredients2","desc2","recipe2"},
+				{"title3","ingredients3","desc3","recipe3"},
+				{"title4","ingredients4","desc4","recipe4"}
+		};
 		return  args -> {
-			Stream.of("One", "Two", "Three", "Four").forEach(name ->{
-				Todo todo = new Todo();
-				todo.setTitle(name);
-				repository.save(todo);
-			});
+			for (var val:mas) {
+				Recipe recipe = new Recipe();
+				recipe.setTitle(val[0]);
+				recipe.setIngredients(val[1]);
+				recipe.setDescription(val[2]);
+				recipe.setRecipe(val[3]);
+				repository.save(recipe);
+			}
 			repository.findAll().forEach(System.out::println);
 		};
 	}
