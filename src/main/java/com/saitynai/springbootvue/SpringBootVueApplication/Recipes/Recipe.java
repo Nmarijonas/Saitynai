@@ -14,7 +14,7 @@ public class Recipe {
     private String recipe;
 
     Recipe(){}
-    Recipe(String title, String ingredients, String description, String recipe){
+    public Recipe(String title, String ingredients, String description, String recipe){
         this.title = title;
         this.ingredients = ingredients;
         this.description = description;
