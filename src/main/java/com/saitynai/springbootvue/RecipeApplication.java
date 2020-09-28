@@ -1,4 +1,4 @@
-package com.saitynai.springbootvue.SpringBootVueApplication;
+package com.saitynai.springbootvue;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

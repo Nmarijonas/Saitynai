@@ -1,8 +1,11 @@
 package com.saitynai.springbootvue.SpringBootVueApplication.Recipes;
 
+import com.saitynai.springbootvue.SpringBootVueApplication.Comments.Comment;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +15,7 @@ public class Recipe {
     private String ingredients;
     private String description;
     private String recipe;
+    private List<Comment> comments;
 
     Recipe(){}
     public Recipe(String title, String ingredients, String description, String recipe){
@@ -20,7 +24,6 @@ public class Recipe {
         this.description = description;
         this.recipe = recipe;
     }
-    // getters
     public Long getId(){
         return this.id;
     }
@@ -29,7 +32,6 @@ public class Recipe {
     public String getDescription(){return this.description;}
     public String getRecipe(){return this.recipe;}
 
-    //setters
     public void setId(Long id) {
         this.id = id;
     }
@@ -39,7 +41,6 @@ public class Recipe {
     public  void setRecipe(String recipe){this.recipe=recipe;}
     @Override
     public boolean equals(Object o) {
-
         if (this == o)
             return true;
         if (!(o instanceof Recipe))

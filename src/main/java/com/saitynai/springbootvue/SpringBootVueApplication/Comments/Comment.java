@@ -10,25 +10,27 @@ public class Comment {
     @Id @GeneratedValue private Long id;
     private String title;
     private String comment;
+    private Long fk_Recipe;
 
     Comment(){}
-    public Comment(String title, String comment){
+    public Comment(String title, String comment,Long fk_Recipe){
         this.title = title;
         this.comment = comment;
+        this.fk_Recipe = fk_Recipe;
     }
-    // getters
     public Long getId(){
         return this.id;
     }
     public String getTitle() { return this.title; }
     public String getComment() {return this.comment; }
+    public Long getFk_Recipe() {return this.fk_Recipe;}
 
-    //setters
     public void setId(Long id) {
         this.id = id;
     }
     public void  setTitle(String title) { this.title = title;}
     public void setComment(String comment) {this.comment = comment;}
+    public void  setFk_Recipe(Long fk_Recipe) {this.fk_Recipe = fk_Recipe;}
 
     @Override
     public boolean equals(Object o) {

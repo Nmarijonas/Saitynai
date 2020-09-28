@@ -19,9 +19,9 @@ class LoadDatabase {
     CommandLineRunner initDatabase(CommentRepository com_repository, RecipeRepository rec_repository) {
 
         return args -> {
-            log.info("Preloading " + com_repository.save(new Comment("title1","comment1")));
-            log.info("Preloading " + com_repository.save(new Comment("title2","comment2")));
-            log.info("Preloading " + com_repository.save(new Comment("title3","comment3")));
+            log.info("Preloading " + com_repository.save(new Comment("title1","comment1",5l)));
+            log.info("Preloading " + com_repository.save(new Comment("title2","comment2",5l)));
+            log.info("Preloading " + com_repository.save(new Comment("title3","comment3",6l)));
 
             log.info("Preloading " + rec_repository.save(new Recipe("title1","ingredient1","desc1","recipe1")));
             log.info("Preloading " + rec_repository.save(new Recipe("title2","ingredient2","desc2","recipe2")));

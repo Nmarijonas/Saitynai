@@ -1,7 +1,14 @@
 package com.saitynai.springbootvue.SpringBootVueApplication.Recipes;
-import java.util.List;
 
-import net.bytebuddy.implementation.bytecode.Throw;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,60 +16,66 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PatchMapping;
 
 @RestController
 class RecipeController {
 
     private final RecipeRepository repository;
+    private final RecipeModelAssembler assembler;
 
-    RecipeController(RecipeRepository repository) {
+    RecipeController(RecipeRepository repository, RecipeModelAssembler assembler) {
         this.repository = repository;
+        this.assembler = assembler;
     }
 
     @GetMapping("/recipes")
-    List<Recipe> all() {
-        return repository.findAll();
+    CollectionModel<EntityModel<Recipe>> all() {
+
+        List<EntityModel<Recipe>> employees = repository.findAll().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(employees, linkTo(methodOn(RecipeController.class).all()).withSelfRel());
     }
 
     @PostMapping("/recipes")
-    Recipe newRecipe(@RequestBody Recipe newRecipe) {
-        return repository.save(newRecipe);
+    ResponseEntity<?> newRecipe(@RequestBody Recipe newRecipe) {
+        EntityModel<Recipe> recipeEntityModel = assembler.toModel(repository.save(newRecipe));
+        return  ResponseEntity.created(recipeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
+                body(recipeEntityModel);
     }
 
-    // Single item
     @GetMapping("/recipes/{id}")
-    Recipe one(@PathVariable Long id) {
-        return repository.findById(id)
+    EntityModel<Recipe> one(@PathVariable Long id) {
+        Recipe recipe = repository.findById(id) //
                 .orElseThrow(() -> new RecipeNotFoundException(id));
+
+        return assembler.toModel(recipe);
     }
 
     @PutMapping("/recipes/{id}")
-    Recipe replaceRecipe(@RequestBody Recipe newRecipe, @PathVariable Long id) {
-        return repository.findById(id)
-                .map(recipe -> {
+    ResponseEntity<?> replaceRecipe(@RequestBody Recipe newRecipe, @PathVariable Long id) {
+        Recipe updatedRecipe = repository.findById(id).
+                map(recipe -> {
                     recipe.setTitle(newRecipe.getTitle());
                     recipe.setIngredients(newRecipe.getIngredients());
                     recipe.setDescription(newRecipe.getIngredients());
                     recipe.setRecipe(newRecipe.getRecipe());
                     return repository.save(recipe);
-                })
-                .orElseThrow(() -> new RecipeNotFoundException(id));
+                }).orElseThrow(() -> new RecipeNotFoundException(id));
+        EntityModel<Recipe> entityModel = assembler.toModel(updatedRecipe);
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).
+                body(entityModel);
     }
 
     @DeleteMapping("/recipes/{id}")
-    void deleteRecipe(@PathVariable Long id) {
+    ResponseEntity<?> deleteRecipe(@PathVariable Long id) {
         try{
             repository.deleteById(id);
+            return ResponseEntity.noContent().build();
         }
         catch (Exception e){
-            throw  new RecipeNotFoundException(id);
-
+            throw new RecipeNotFoundException(id);
         }
-        //repository.deleteById(id);
-//        repository.findById(id).map(recipe -> {
-//            repository.deleteById(id);
-//            return null;
-//        }).orElseThrow(() -> new RecipeNotFoundException(id));
     }
 }
